@@ -1,0 +1,33 @@
+---
+
+- name: Install the Virtio Network Driver (netkvm)
+  win_command: "pnputil -i -a \"{{ virtio_win_virtio_path }}\\NetKVM\\{{ virtio_driver_directory }}\\{{ ansible_env.PROCESSOR_ARCHITECTURE | lower }}\\*.inf\""
+  when: driver_list.stdout is not search("netkvm")
+
+- name: Install the Virtio Block Driver (viostor)
+  win_command: "pnputil -i -a \"{{ virtio_win_virtio_path }}\\viostor\\{{ virtio_driver_directory }}\\{{ ansible_env.PROCESSOR_ARCHITECTURE | lower }}\\*.inf\""
+  when: driver_list.stdout is not search("viostor")
+
+- name: Install the QXL Graphics Driver (qxldod)
+  win_command: "pnputil -i -a \"{{ virtio_win_virtio_path }}\\qxldod\\{{ virtio_driver_directory }}\\{{ ansible_env.PROCESSOR_ARCHITECTURE | lower }}\\*.inf\""
+  when: driver_list.stdout is not search("qxldod")
+
+- name: Install the Balloon Driver (Balloon)
+  win_command: "pnputil -i -a \"{{ virtio_win_virtio_path }}\\Balloon\\{{ virtio_driver_directory }}\\{{ ansible_env.PROCESSOR_ARCHITECTURE | lower }}\\*.inf\""
+  when: driver_list.stdout is not search("balloon")
+
+- name: Install Virtio RNG driver (viorng)
+  win_command: "pnputil -i -a \"{{ virtio_win_virtio_path }}\\viorng\\{{ virtio_driver_directory }}\\{{ ansible_env.PROCESSOR_ARCHITECTURE | lower }}\\*.inf\""
+  when: driver_list.stdout is not search("viorng")
+
+- name: Install Virtio serial driver (vioserial)
+  win_command: "pnputil -i -a \"{{ virtio_win_virtio_path }}\\vioserial\\{{ virtio_driver_directory }}\\{{ ansible_env.PROCESSOR_ARCHITECTURE | lower }}\\*.inf\""
+  when: driver_list.stdout is not search("vioser")
+
+- name: Install Virtio Input driver (vioinput)
+  win_command: "pnputil -i -a \"{{ virtio_win_virtio_path }}\\vioinput\\{{ virtio_driver_directory }}\\{{ ansible_env.PROCESSOR_ARCHITECTURE | lower }}\\*.inf\""
+  when: driver_list.stdout is not search("vioinput")
+
+- name: Install pvpanic device driver (pvpanic)
+  win_command: "pnputil -i -a \"{{ virtio_win_virtio_path }}\\pvpanic\\{{ virtio_driver_directory }}\\{{ ansible_env.PROCESSOR_ARCHITECTURE | lower }}\\*.inf\""
+  when: driver_list.stdout is not search("pvpanic")

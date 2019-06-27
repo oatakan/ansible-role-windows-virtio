@@ -1,0 +1,19 @@
+---
+
+- name: check new version of virtio
+  uri:
+    url: "{{ virtio_changelog_url }}"
+    return_content: true
+    validate_certs: no
+  register: register_virtio_changelog
+  delegate_to: localhost
+  become: no
+  vars:
+    ansible_connection: local
+
+- name: set virtio version facts
+  set_fact:
+    virtio_version: "{{ register_virtio_changelog.content | regex_search(virtio_changelog_query) }}"
+
+- include_tasks: install.yml
+  when: (ansible_virtio_version | default()) != virtio_version

@@ -1,0 +1,34 @@
+---
+galaxy_info:
+  author: Orcun Atakan
+  description: Ansible galaxy role for installing virtio drivers on Windows images.
+  company: Red Hat
+
+  license: MIT
+
+  min_ansible_version: 2.5
+
+  platforms:
+    - name: Windows
+      versions:
+        - all
+
+  categories:
+    - all
+
+  cloud_platforms:
+    - ovirt
+    - rhev
+    - rhv
+    - kvm
+
+  galaxy_tags:
+    - windows
+    - ovirt
+    - rhev
+    - rhv
+    - kvm
+    - cloud
+    - multicloud
+
+dependencies: []
