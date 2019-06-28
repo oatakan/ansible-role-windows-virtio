@@ -1,4 +1,4 @@
-# ansible-role-windows-virtio
+# windows_virtio
 This repo contains an Ansible role that installs virtio drivers on Windows images.
 Role Name
 
@@ -24,7 +24,7 @@ Including an example of how to use your role (for instance, with variables passe
 
     - hosts: servers
       roles:
-         - oatakan.windows-virtio
+         - oatakan.windows_virtio
 
 License
 -------
