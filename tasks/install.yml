@@ -35,3 +35,5 @@
   when: cert_check.stdout is not search("Red Hat")
 
 - include_tasks: install_drivers.yml
+  tags:
+    - skip_ansible_lint
