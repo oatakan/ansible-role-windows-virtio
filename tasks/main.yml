@@ -15,5 +15,40 @@
   set_fact:
     virtio_version: "{{ register_virtio_changelog.content | regex_search(virtio_changelog_query) }}"
 
-- include_tasks: install.yml
+- name: Get list of all drivers
+  win_command: driverquery /V
+  changed_when: false
+  register: driver_list
+
+- name: Check if Red Hat certificate is not already installed
+  win_shell: 'Get-ChildItem -Path Cert:\LocalMachine\TrustedPublisher'
+  changed_when: false
+  register: cert_check
+
+- block:
+    - block:
+
+        - include_tasks: install.yml
+          when: (not '2008' in windows_distro_name)
+
+      always:
+        - name: Unmount
+          win_disk_image:
+            image_path: '{{ ansible_env.TEMP }}\{{ virtio_win_iso_name }}'
+            state: absent
+          when: win_disk_image.mount_path is defined
+
+    - include_tasks: install_from_msi.yml
+      when: ('2008' in windows_distro_name)
+  always:
+    - name: Delete downloaded
+      win_file:
+        path: '{{ item }}'
+        state: absent
+      loop:
+        - '{{ ansible_env.TEMP }}\redhat_balloon.cer'
+        - '{{ ansible_env.TEMP }}\redhat_qxldod.cer'
+        - '{{ ansible_env.TEMP }}\{{ virtio_win_iso_name }}'
+        - '{{ ansible_env.TEMP }}\virtio_msi_extract'
+        - '{{ ansible_env.TEMP }}\{{ virtio_msi_name }}'
   when: (ansible_virtio_version | default()) != virtio_version
