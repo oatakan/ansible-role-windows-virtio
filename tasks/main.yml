@@ -29,7 +29,7 @@
     - block:
 
         - include_tasks: install.yml
-          when: (not '2008' in windows_distro_name)
+          when: ('Windows Server 2008' not in ansible_distribution)
 
       always:
         - name: Unmount
@@ -39,7 +39,7 @@
           when: win_disk_image.mount_path is defined
 
     - include_tasks: install_from_msi.yml
-      when: ('2008' in windows_distro_name)
+      when: ('Windows Server 2008' in ansible_distribution)
   always:
     - name: Delete downloaded
       win_file:
