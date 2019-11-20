@@ -16,13 +16,9 @@
     msiexec /a '{{ ansible_env.TEMP }}\{{ virtio_msi_name }}'
     /qb TARGETDIR='{{ ansible_env.TEMP }}\virtio_msi_extract'
 
-- name: Set the virtio_msi_path
-  set_fact:
-    virtio_msi_path: '{{ ansible_env.TEMP }}\virtio_msi_extract\Virtio-Win'
-
 - name: Set the virtio_win_virtio_path
   set_fact:
-    virtio_win_virtio_path: "{{ virtio_msi_path + '\\virtio' if virtio_win_ovirt else virtio_msi_path }}"
+    virtio_win_virtio_path: '{{ ansible_env.TEMP }}\virtio_msi_extract\Virtio-Win'
 
 - include_tasks: install_cert_from_msi.yml
   when: cert_check.stdout is not search("Red Hat")
