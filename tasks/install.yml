@@ -33,12 +33,14 @@
   set_fact:
     virtio_win_iso_path: "{{ win_disk_image.mount_path }}"
     virtio_win_virtio_path: "{{ win_disk_image.mount_path + '\\virtio' if virtio_win_ovirt else win_disk_image.mount_path }}"
+    virtio_win_iso_name: "{{ virtio_win_iso_name }}"
   when: ('Windows Server 2008' not in ansible_distribution)
 
 - name: Set the virtio_win_iso_path and virtio_win_virtio_path
   set_fact:
     virtio_win_iso_path: "{{ ansible_env.TEMP }}\\virtio_iso_extract"
     virtio_win_virtio_path: "{{ ansible_env.TEMP + '\\virtio_iso_extract\\virtio' if virtio_win_ovirt else ansible_env.TEMP + '\\virtio_iso_extract' }}"
+    virtio_win_iso_name: "{{ virtio_win_iso_name }}"
   when: ('Windows Server 2008' in ansible_distribution)
 
 - include_tasks: install_cert.yml
