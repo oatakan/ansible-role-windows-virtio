@@ -10,7 +10,7 @@
     path: '{{ ansible_env.TEMP }}\virtio_iso_extract'
     state: directory
 
-- name: Extract msi package
+- name: Extract iso
   win_shell: >
     7z.exe x -y '{{ ansible_env.TEMP }}\{{ virtio_win_iso_name }}' -o'{{ ansible_env.TEMP }}\virtio_iso_extract'
 
