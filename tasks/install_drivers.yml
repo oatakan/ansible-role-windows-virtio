@@ -10,7 +10,15 @@
 
 - name: Install the QXL Graphics Driver (qxldod)
   win_command: "pnputil -i -a \"{{ virtio_win_virtio_path }}\\qxldod\\{{ virtio_driver_directory }}\\{{ ansible_env.PROCESSOR_ARCHITECTURE | lower }}\\*.inf\""
-  when: driver_list.stdout is not search("qxldod")
+  when:
+    - driver_list.stdout is not search("qxldod")
+    - virtio_driver_directory != '2k8R2'
+
+- name: Install the QXL Graphics Driver (qxl)
+  win_command: "pnputil -i -a \"{{ virtio_win_virtio_path }}\\qxl\\{{ virtio_driver_directory }}\\{{ ansible_env.PROCESSOR_ARCHITECTURE | lower }}\\*.inf\""
+  when:
+    - driver_list.stdout is not search("qxl")
+    - virtio_driver_directory == '2k8R2'
 
 - name: Install the Balloon Driver (Balloon)
   win_command: "pnputil -i -a \"{{ virtio_win_virtio_path }}\\Balloon\\{{ virtio_driver_directory }}\\{{ ansible_env.PROCESSOR_ARCHITECTURE | lower }}\\*.inf\""
@@ -27,6 +35,10 @@
 - name: Install Virtio Input driver (vioinput)
   win_command: "pnputil -i -a \"{{ virtio_win_virtio_path }}\\vioinput\\{{ virtio_driver_directory }}\\{{ ansible_env.PROCESSOR_ARCHITECTURE | lower }}\\*.inf\""
   when: driver_list.stdout is not search("vioinput")
+
+- name: Install Virtio SCSI Passthrough driver (vioscsi)
+  win_command: "pnputil -i -a \"{{ virtio_win_virtio_path }}\\vioscsi\\{{ virtio_driver_directory }}\\{{ ansible_env.PROCESSOR_ARCHITECTURE | lower }}\\*.inf\""
+  when: driver_list.stdout is not search("vioscsi")
 
 - name: Install pvpanic device driver (pvpanic)
   win_command: "pnputil -i -a \"{{ virtio_win_virtio_path }}\\pvpanic\\{{ virtio_driver_directory }}\\{{ ansible_env.PROCESSOR_ARCHITECTURE | lower }}\\*.inf\""
