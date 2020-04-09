@@ -1,5 +1,8 @@
 ---
 
+# this takes precedence, if a mounted drive is provided, we'll install from there
+virtio_iso_mount_drive: ''
+
 virtio_changelog_url: https://fedorapeople.org/groups/virt/virtio-win/CHANGELOG
 virtio_changelog_query: '(\d+).(\d+).(\d+)-(\d+)'
 virtio_win_iso_url: "https://fedorapeople.org/groups/virt/virtio-win/direct-downloads/archive-virtio/virtio-win-{{ virtio_version }}/virtio-win.iso"
