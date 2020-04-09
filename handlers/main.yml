@@ -10,6 +10,7 @@
   win_file:
     path: "{{ item }}"
     state: absent
+  when: virtio_iso_mount_drive | length == 0
   with_items:
     - "{{ ansible_env.TEMP }}\\redhat_balloon.cer"
     - "{{ ansible_env.TEMP }}\\redhat_qxldod.cer"
