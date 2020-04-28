@@ -12,7 +12,7 @@ virtio_win_facts: "{{ ansible_env.SystemDrive }}\\{{ source_of_supply_name | def
 
 virtio_driver_directory: >-
       {% if 'Windows Server 2019' in ansible_distribution -%}
-        {% set virt_dir = '2k16' %}
+        {% set virt_dir = '2k19' %}
       {% elif 'Windows Server 2016' in ansible_distribution -%}
         {% set virt_dir = '2k16' %}
       {% elif 'Windows Server 2012 R2' in ansible_distribution -%}
