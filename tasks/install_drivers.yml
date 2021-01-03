@@ -2,7 +2,8 @@
 
 - name: Install the Virtio Drivers
   win_command: "pnputil -i -a \"{{ virtio_win_virtio_path }}\\{{ item }}\\{{ virtio_driver_directory }}\\{{ ansible_env.PROCESSOR_ARCHITECTURE | lower }}\\*.inf\""
-  when: driver_list.stdout is not search(item)
+  when: driver_list.stdout is not search(item|lower)
+  ignore_errors: yes
   loop:
     - NetKVM
     - viostor
