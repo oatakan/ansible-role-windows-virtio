@@ -1,15 +1,17 @@
 ---
 
-- name: Set the virtio_win_iso_path and virtio_win_virtio_path
-  set_fact:
-    virtio_win_iso_path: '{{ win_disk_image.mount_paths[0] | default(virtio_iso_mount_drive) }}'
-    virtio_win_virtio_path: "{{ (win_disk_image.mount_paths[0] | default(virtio_iso_mount_drive)) + '\\virtio' if virtio_win_ovirt else (win_disk_image.mount_paths[0] | default(virtio_iso_mount_drive)) }}"
+- name: set the virtio_win_iso_path and virtio_win_virtio_path
+  ansible.builtin.set_fact:
+    virtio_win_iso_path: '{{ _iso_path }}'
+    virtio_win_virtio_path: "{{ (win_disk_image.mount_paths[0] | default(virtio_iso_mount_drive)) + '\\virtio' if virtio_win_ovirt else (_iso_path) }}"
     virtio_win_iso_name: "{{ virtio_win_iso_name }}"
+  vars:
+    _iso_path: '{{ win_disk_image.mount_paths[0] | default(virtio_iso_mount_drive) }}'
   when:
     - virtio_iso_mount_drive | length > 0 or ('Windows Server 2008' not in ansible_distribution and 'Windows 7' not in ansible_distribution)
 
-- name: Set the virtio_win_iso_path and virtio_win_virtio_path
-  set_fact:
+- name: set the virtio_win_iso_path and virtio_win_virtio_path
+  ansible.builtin.set_fact:
     virtio_win_iso_path: '{{ ansible_env.TEMP }}\virtio_iso_extract'
     virtio_win_virtio_path: "{{ ansible_env.TEMP + '\\virtio_iso_extract\\virtio' if virtio_win_ovirt else ansible_env.TEMP + '\\virtio_iso_extract' }}"
     virtio_win_iso_name: "{{ virtio_win_iso_name }}"
@@ -17,17 +19,19 @@
     - virtio_iso_mount_drive | length == 0
     - ('Windows Server 2008' in ansible_distribution) or ('Windows 7' in ansible_distribution)
 
-- name: Get list of all drivers
-  win_command: driverquery /V
+- name: get list of all drivers
+  ansible.windows.win_command: driverquery /V
   changed_when: false
   register: driver_list
 
-- name: Check if Red Hat certificate is not already installed
-  win_shell: 'Get-ChildItem -Path Cert:\LocalMachine\TrustedPublisher'
+- name: check if Red Hat certificate is not already installed
+  ansible.windows.win_shell: 'Get-ChildItem -Path Cert:\LocalMachine\TrustedPublisher'
   changed_when: false
   register: cert_check
 
-- include_tasks: install_cert.yml
+- name: install cert
+  ansible.builtin.include_tasks: install_cert.yml
   when: cert_check.stdout is not search("Red Hat")
 
-- include_tasks: install_drivers.yml
+- name: install drivers
+  ansible.builtin.include_tasks: install_drivers.yml

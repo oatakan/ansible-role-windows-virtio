@@ -1,7 +1,7 @@
 ---
 
-- name: Install 7-zip
-  win_chocolatey:
+- name: install 7-zip
+  chocolatey.chocolatey.win_chocolatey:
     name: 7zip
     state: present
   register: install_7zip
@@ -9,16 +9,16 @@
   delay: 3
   retries: 5
 
-- name: Ensure temp directory exists for iso
-  win_file:
+- name: ensure temp directory exists for iso
+  ansible.windows.win_file:
     path: '{{ ansible_env.TEMP }}\virtio_iso_extract'
     state: directory
 
-- name: Extract iso
-  win_shell: >
+- name: extract iso
+  ansible.windows.win_shell: >
     7z.exe x -y '{{ ansible_env.TEMP }}\{{ virtio_win_iso_name }}' -o'{{ ansible_env.TEMP }}\virtio_iso_extract'
 
-- name: Remove 7-zip
-  win_chocolatey:
+- name: remove 7-zip
+  chocolatey.chocolatey.win_chocolatey:
     name: 7zip
     state: absent

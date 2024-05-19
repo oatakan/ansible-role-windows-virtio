@@ -1,5 +1,6 @@
 ---
-- hosts: localhost
+- name: install virtio drivers
+  hosts: localhost
   remote_user: Administrator
   vars:
     ansible_port: 5986
