@@ -23,8 +23,10 @@ virtio_driver_directory: >-
         {% set virt_dir = '2k8R2' %}
       {% elif 'Windows 7' in ansible_distribution -%}
         {% set virt_dir = 'w7' %}
+      {% elif 'Windows 8.1' in ansible_distribution -%}
+        {% set virt_dir = 'w8.1' %}
       {% elif 'Windows 8' in ansible_distribution -%}
-        {% set virt_dir = 'w7' %}
+        {% set virt_dir = 'w8' %}
       {% elif 'Windows 10' in ansible_distribution -%}
         {% set virt_dir = 'w10' %}
       {% elif 'Windows 11' in ansible_distribution -%}
