@@ -38,7 +38,7 @@ virtio_driver_directory: >-
 qxl_driver: >-
       {% if 'Windows Server 2008 R2' in ansible_distribution or 'Windows 7' in ansible_distribution -%}
         {% set qxl_driver_name = 'qxl' %}
-      {% if 'Windows Server 2022' in ansible_distribution or 'Windows 11' in ansible_distribution -%}
+      {% elif 'Windows Server 2022' in ansible_distribution or 'Windows 11' in ansible_distribution -%}
         {% set qxl_driver_name = 'viogpudo' %}
       {% else -%}
         {% set qxl_driver_name = 'qxldod' %}
