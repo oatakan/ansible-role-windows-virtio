@@ -10,6 +10,8 @@ virtio_win_iso_name: virtio-win.iso
 virtio_win_ovirt: false
 virtio_win_facts: "{{ ansible_env.SystemDrive }}\\{{ source_of_supply_name | default('Support') }}\\facts.d"
 
+virtio_preferred_gpu_driver: viogpudo # only for windows server 2012-2019, desktop 8-10
+
 virtio_driver_directory: >-
       {% if 'Windows Server 2022' in ansible_distribution -%}
         {% set virt_dir = '2k22' %}
@@ -41,5 +43,5 @@ qxl_driver: >-
       {% elif 'Windows Server 2022' in ansible_distribution or 'Windows 11' in ansible_distribution -%}
         {% set qxl_driver_name = 'viogpudo' %}
       {% else -%}
-        {% set qxl_driver_name = 'qxldod' %}
+        {% set qxl_driver_name = virtio_preferred_gpu_driver %}
       {%- endif %}{{ qxl_driver_name }}
