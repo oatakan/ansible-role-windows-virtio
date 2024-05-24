@@ -22,17 +22,17 @@
     - "{{ qxl_driver }}"
     - balloon
 
-- name: export and install viorng cert for Windows 8 only
+- name: export and install viorng cert for 2008 R2
   block:
-    - name: export Cert from viorng (Windows 8 only)
+    - name: export Cert from viorng
       ansible.windows.win_shell: >
         $cert = (Get-AuthenticodeSignature
         "{{ virtio_win_virtio_path }}\viorng\{{ virtio_driver_directory }}\amd64\viorng.cat").SignerCertificate;
         [System.IO.File]::WriteAllBytes("{{ ansible_env.TEMP }}\redhat_viorng.cer",
         $cert.Export([System.Security.Cryptography.X509Certificates.X509ContentType]::Cert));
 
-    - name: install RH certificates for viorng to TrustedPublisher certificate store (Windows 8 only)
+    - name: install RH certificates for viorng to TrustedPublisher certificate store
       ansible.windows.win_command: 'certutil.exe -f -addstore "TrustedPublisher" {{ ansible_env.TEMP }}\redhat_viorng.cer'
       notify:
         - delete downloaded
-  when: ('Windows 8 ' in ansible_distribution)
+  when: virtio_driver_directory == '2k8R2'
