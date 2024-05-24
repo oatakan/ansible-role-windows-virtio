@@ -22,7 +22,7 @@
     - "{{ qxl_driver }}"
     - balloon
 
-- name: export and install viorng cert for 2008 R2
+- name: export and install viorng cert for 2008 R2 and Windows 7
   block:
     - name: export Cert from viorng
       ansible.windows.win_shell: >
@@ -35,4 +35,4 @@
       ansible.windows.win_command: 'certutil.exe -f -addstore "TrustedPublisher" {{ ansible_env.TEMP }}\redhat_viorng.cer'
       notify:
         - delete downloaded
-  when: virtio_driver_directory == '2k8R2'
+  when: virtio_driver_directory in ['2k8R2', 'w7']
