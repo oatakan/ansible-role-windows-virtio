@@ -28,7 +28,7 @@ virtio_driver_directory: >-
       {% elif 'Windows 8.1' in ansible_distribution -%}
         {% set virt_dir = 'w8.1' %}
       {% elif 'Windows 8' in ansible_distribution -%}
-        {% set virt_dir = 'w8' %}
+        {% set virt_dir = '2k8R2' %}
       {% elif 'Windows 10' in ansible_distribution -%}
         {% set virt_dir = 'w10' %}
       {% elif 'Windows 11' in ansible_distribution -%}
@@ -38,9 +38,9 @@ virtio_driver_directory: >-
       {%- endif %}{{ virt_dir }}
 
 qxl_driver: >-
-      {% if 'Windows Server 2008 R2' in ansible_distribution or 'Windows 7' in ansible_distribution -%}
+      {% if virtio_driver_directory in ['2k8R2', 'w7'] -%}
         {% set qxl_driver_name = 'qxl' %}
-      {% elif 'Windows Server 2022' in ansible_distribution or 'Windows 11' in ansible_distribution -%}
+      {% elif virtio_driver_directory in ['2k22', 'w11'] -%}
         {% set qxl_driver_name = 'viogpudo' %}
       {% else -%}
         {% set qxl_driver_name = virtio_preferred_gpu_driver %}
