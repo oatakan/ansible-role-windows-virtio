@@ -17,3 +17,6 @@
     - "{{ ansible_env.TEMP }}\\redhat_viorng.cer"
     - "{{ ansible_env.TEMP }}\\{{ virtio_win_iso_name }}"
     - "{{ ansible_env.TEMP }}\\virtio_iso_extract"
+
+- name: restart system
+  ansible.windows.win_reboot:

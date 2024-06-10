@@ -22,6 +22,12 @@
     - virtio_iso_mount_drive | length == 0
     - (ansible_virtio_version | default()) != virtio_version
 
-- name: install virtio drivers
-  ansible.builtin.include_tasks: install.yml
+- name: install virtio drivers and guest agent
+  block:
+    - name: install virtio drivers
+      ansible.builtin.include_tasks: install.yml
+
+    - name: install qemu guest agent
+      ansible.builtin.include_tasks: install_agent.yml
+      when: virtio_install_guest_agent | bool
   when: virtio_iso_mount_drive | length > 0 or (ansible_virtio_version | default()) != virtio_version

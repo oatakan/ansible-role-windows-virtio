@@ -1,0 +1,63 @@
+---
+
+- name: get qemu guest service information
+  ansible.windows.win_service_info:
+    name: QEMU-GA
+  register: qemu_guest_service_info
+
+- name: set qemu guest service status
+  ansible.builtin.set_fact:
+    qemu_guest_service_status: "{{ qemu_guest_service_info }}"
+
+- name: install qemu guest agent and check results
+  block:
+    - name: install qemu guest agent
+      ansible.windows.win_shell: '{{ virtio_win_iso_path }}\virtio-win-guest-tools.exe /install /quiet /norestart'
+      args:
+        executable: cmd
+        creates: '{{ ansible_env["ProgramFiles"] }}\Qemu-ga\qemu-ga.exe'
+      register: install_qemu_guest_agent
+      async: 1000
+      poll: 0
+
+    - name: wait for system to be online
+      ansible.builtin.wait_for_connection:
+        connect_timeout: 10
+        sleep: 5
+        delay: 90
+        timeout: 300
+
+    - name: ensure installation is finished
+      ansible.builtin.async_status:
+        jid: "{{ install_qemu_guest_agent.ansible_job_id }}"
+      register: install_qemu_guest_agent_async_task
+      until: install_qemu_guest_agent_async_task.finished
+      retries: 30
+      delay: 10
+      failed_when:
+        - install_qemu_guest_agent_async_task.rc is defined
+        - install_qemu_guest_agent_async_task.rc not in [0,3010]
+      changed_when:
+        - install_qemu_guest_agent_async_task.rc is defined
+        - install_qemu_guest_agent_async_task.rc == 3010
+      when: install_qemu_guest_agent.ansible_job_id is defined
+      notify:
+        - restart system
+
+    - name: get qemu guest service information
+      ansible.windows.win_service_info:
+        name: QEMU-GA
+      register: qemu_guest_service_info_post_install
+
+    - name: set qemu guest service status after installation
+      ansible.builtin.set_fact:
+        qemu_guest_service_status: "{{ qemu_guest_service_info_post_install }}"
+  when: not qemu_guest_service_status.exists
+
+- name: show qemu guest service status
+  ansible.builtin.debug:
+    msg: "{{ qemu_guest_service_status.services[0].state }}"
+  when:
+    - qemu_guest_service_status is defined
+    - qemu_guest_service_status.exists
+    - qemu_guest_service_status.services | length
