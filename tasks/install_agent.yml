@@ -37,12 +37,6 @@
       until: install_qemu_guest_agent_async_task.finished
       retries: 30
       delay: 10
-      failed_when:
-        - install_qemu_guest_agent_async_task.rc is defined
-        - install_qemu_guest_agent_async_task.rc not in [0,3010]
-      changed_when:
-        - install_qemu_guest_agent_async_task.rc is defined
-        - install_qemu_guest_agent_async_task.rc == 3010
       when: install_qemu_guest_agent.ansible_job_id is defined
       notify:
         - restart system
