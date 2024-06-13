@@ -20,3 +20,8 @@
 
 - name: restart system
   ansible.windows.win_reboot:
+
+- name: remove chocolatey
+  chocolatey.chocolatey.win_chocolatey:
+    name: chocolatey
+    state: absent

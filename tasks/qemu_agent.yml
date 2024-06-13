@@ -1,0 +1,59 @@
+---
+
+- name: install qemu guest agent
+  ansible.windows.win_package:
+    path: '{{ virtio_win_iso_path }}\virtio-win-guest-tools.exe'
+    creates_path: '{{ ansible_env["ProgramFiles"] }}\Qemu-ga\qemu-ga.exe'
+    arguments:
+      - /install
+      - /quiet
+      - /norestart
+  register: install_qemu_guest_agent
+  async: 1000
+  poll: 0
+
+- name: ensure installation is finished
+  ansible.builtin.async_status:
+    jid: "{{ install_qemu_guest_agent.ansible_job_id }}"
+  register: install_qemu_guest_agent_async_task
+  until: install_qemu_guest_agent_async_task.finished
+  retries: 30
+  delay: 10
+  when: install_qemu_guest_agent.ansible_job_id is defined
+  ignore_unreachable: true
+  failed_when: false
+  notify:
+    - restart system
+
+- name: set qemu installation status
+  ansible.builtin.set_fact:
+    qemu_guest_installation_status: '{{ install_qemu_guest_agent_async_task }}'
+
+- name: fail if needed
+  ansible.builtin.fail:
+    msg: "qemu agent installation failed..."
+  when:
+    - qemu_guest_installation_status.rc is defined
+    - qemu_guest_installation_status.rc not in [0, 3010, 1603]
+
+- name: wait for system and ensure installation is finished if needed
+  block:
+    - name: wait for system to be online
+      ansible.builtin.wait_for_connection:
+        connect_timeout: 10
+        sleep: 5
+        timeout: 300
+
+    - name: ensure installation is finished
+      ansible.builtin.async_status:
+        jid: "{{ install_qemu_guest_agent.ansible_job_id }}"
+      register: install_qemu_guest_agent_async_task
+      until: install_qemu_guest_agent_async_task.finished
+      retries: 30
+      delay: 10
+      when: install_qemu_guest_agent.ansible_job_id is defined
+      notify:
+        - restart system
+  when:
+    - qemu_guest_installation_status.unreachable is defined
+    - qemu_guest_installation_status.unreachable

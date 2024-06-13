@@ -12,34 +12,18 @@
 - name: install qemu guest agent and check results
   block:
     - name: install qemu guest agent
-      ansible.windows.win_package:
-        path: '{{ virtio_win_iso_path }}\virtio-win-guest-tools.exe'
-        creates_path: '{{ ansible_env["ProgramFiles"] }}\Qemu-ga\qemu-ga.exe'
-        arguments:
-          - /install
-          - /passive
-          - /norestart
-      register: install_qemu_guest_agent
-      async: 1000
-      poll: 0
+      ansible.builtin.include_tasks: qemu_agent.yml
 
-    - name: wait for system to be online
-      ansible.builtin.wait_for_connection:
-        connect_timeout: 10
-        sleep: 5
-        delay: 90
-        timeout: 300
+    - name: reboot and retry if needed
+      block:
+        - name: reboot the system
+          ansible.windows.win_reboot:
 
-    - name: ensure installation is finished
-      ansible.builtin.async_status:
-        jid: "{{ install_qemu_guest_agent.ansible_job_id }}"
-      register: install_qemu_guest_agent_async_task
-      until: install_qemu_guest_agent_async_task.finished
-      retries: 30
-      delay: 10
-      when: install_qemu_guest_agent.ansible_job_id is defined
-      notify:
-        - restart system
+        - name: install qemu guest agent (retry)
+          ansible.builtin.include_tasks: qemu_agent.yml
+      when:
+        - qemu_guest_installation_status.rc is defined
+        - qemu_guest_installation_status.rc == 1603
 
     - name: get qemu guest service information
       ansible.windows.win_service_info:
