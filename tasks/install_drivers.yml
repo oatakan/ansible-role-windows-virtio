@@ -5,11 +5,11 @@
   when: driver_list.stdout is not search(item | lower)
   failed_when: false
   vars:
-    _inf_path: '{{ virtio_win_virtio_path }}\{{ item }}\{{ virtio_driver_directory }}\{{ ansible_env.PROCESSOR_ARCHITECTURE | lower }}\*.inf'
+    _inf_path: '{{ virtio_win_virtio_path }}\{{ item }}\{{ virtio_driver_directory }}\{{ system_arch }}\*.inf'
   loop:
     - NetKVM
     - viostor
-    - "{{ qxl_driver }}"
+    - "{{ gpu_driver }}"
     - Balloon
     - viorng
     - vioserial

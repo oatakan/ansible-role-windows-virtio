@@ -39,11 +39,11 @@ virtio_driver_directory: >-
         {% set virt_dir = 'w10' %}
       {%- endif %}{{ virt_dir }}
 
-qxl_driver: >-
+gpu_driver: >-
       {% if virtio_driver_directory in ['2k8R2', 'w7'] -%}
-        {% set qxl_driver_name = 'qxl' %}
+        {% set gpu_driver_name = 'qxl' %}
       {% elif virtio_driver_directory in ['2k22', 'w11'] -%}
-        {% set qxl_driver_name = 'viogpudo' %}
+        {% set gpu_driver_name = 'viogpudo' %}
       {% else -%}
-        {% set qxl_driver_name = virtio_preferred_gpu_driver %}
-      {%- endif %}{{ qxl_driver_name }}
+        {% set gpu_driver_name = virtio_preferred_gpu_driver %}
+      {%- endif %}{{ gpu_driver_name }}

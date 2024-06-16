@@ -1,16 +1,16 @@
 ---
 
-- name: export Cert from {{ qxl_driver }}
+- name: export Cert from {{ gpu_driver }}
   ansible.windows.win_shell: >
     $cert = (Get-AuthenticodeSignature
-    "{{ virtio_win_virtio_path }}\{{ qxl_driver }}\{{ virtio_driver_directory }}\amd64\{{ qxl_driver }}.cat").SignerCertificate;
-    [System.IO.File]::WriteAllBytes("{{ ansible_env.TEMP }}\redhat_{{ qxl_driver }}.cer",
+    "{{ virtio_win_virtio_path }}\{{ gpu_driver }}\{{ virtio_driver_directory }}\{{ system_arch }}\{{ gpu_driver }}.cat").SignerCertificate;
+    [System.IO.File]::WriteAllBytes("{{ ansible_env.TEMP }}\redhat_{{ gpu_driver }}.cer",
     $cert.Export([System.Security.Cryptography.X509Certificates.X509ContentType]::Cert));
 
 - name: export Cert from balloon
   ansible.windows.win_shell: >
     $cert = (Get-AuthenticodeSignature
-    "{{ virtio_win_virtio_path }}\Balloon\{{ virtio_driver_directory }}\amd64\blnsvr.exe").SignerCertificate;
+    "{{ virtio_win_virtio_path }}\Balloon\{{ virtio_driver_directory }}\{{ system_arch }}\blnsvr.exe").SignerCertificate;
     [System.IO.File]::WriteAllBytes("{{ ansible_env.TEMP }}\redhat_balloon.cer",
     $cert.Export([System.Security.Cryptography.X509Certificates.X509ContentType]::Cert));
 
@@ -19,7 +19,7 @@
   notify:
     - delete downloaded
   loop:
-    - "{{ qxl_driver }}"
+    - "{{ gpu_driver }}"
     - balloon
 
 - name: export and install viorng cert for 2008 R2 and Windows 7
@@ -27,7 +27,7 @@
     - name: export Cert from viorng
       ansible.windows.win_shell: >
         $cert = (Get-AuthenticodeSignature
-        "{{ virtio_win_virtio_path }}\viorng\{{ virtio_driver_directory }}\amd64\viorng.cat").SignerCertificate;
+        "{{ virtio_win_virtio_path }}\viorng\{{ virtio_driver_directory }}\{{ system_arch }}\viorng.cat").SignerCertificate;
         [System.IO.File]::WriteAllBytes("{{ ansible_env.TEMP }}\redhat_viorng.cer",
         $cert.Export([System.Security.Cryptography.X509Certificates.X509ContentType]::Cert));
 

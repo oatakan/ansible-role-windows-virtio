@@ -19,6 +19,15 @@
     - virtio_iso_mount_drive | length == 0
     - ('Windows Server 2008' in ansible_distribution) or ('Windows 7' in ansible_distribution)
 
+- name: check to see if viogpudo is available
+  ansible.windows.win_stat:
+    path: '{{ virtio_win_virtio_path }}\{{ gpu_driver }}\{{ virtio_driver_directory }}\{{ system_arch }}\viogpudo.cat'
+  register: check_viogpudo
+
+- name: set gpu_driver
+  ansible.builtin.set_fact:
+    gpu_driver: "{{ virtio_preferred_gpu_driver if (check_viogpudo.stat.exists) else 'qxl' }}"
+
 - name: get list of all drivers
   ansible.windows.win_command: driverquery /V
   changed_when: false

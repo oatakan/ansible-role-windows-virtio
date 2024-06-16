@@ -1,0 +1,3 @@
+---
+
+system_arch: "{{ ansible_env.PROCESSOR_ARCHITECTURE | default('amd64') | lower }}"
