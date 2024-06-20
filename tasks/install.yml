@@ -21,7 +21,7 @@
 
 - name: check to see if viogpudo is available
   ansible.windows.win_stat:
-    path: '{{ virtio_win_virtio_path }}\{{ gpu_driver }}\{{ virtio_driver_directory }}\{{ system_arch }}\viogpudo.cat'
+    path: '{{ virtio_win_virtio_path }}\viogpudo\{{ virtio_driver_directory }}\{{ system_arch }}\viogpudo.cat'
   register: check_viogpudo
 
 - name: set gpu_driver
